@@ -4,6 +4,7 @@ import { FeedbackController } from './feedback.controller';
 import { PrismaService } from '@/prisma/prisma.service';
 
 @Module({
+  imports: [],
   controllers: [FeedbackController],
   providers: [FeedbackService, PrismaService],
 })

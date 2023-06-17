@@ -6,8 +6,22 @@ import * as cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import validationOptions from './app/utils/validation-options';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
+  try {
+    const microservice = await NestFactory.createMicroservice(AppModule, {
+      name: 'FEEDBACK_SERVICE',
+      transport: Transport.REDIS,
+      options: {
+        url: `${process.env.REDIS_URL}`,
+      },
+    });
+    await microservice.listen();
+  } catch (e) {
+    console.log(e);
+  }
+
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
 

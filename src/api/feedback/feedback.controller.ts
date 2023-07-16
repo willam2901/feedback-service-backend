@@ -28,7 +28,7 @@ export class FeedbackController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.feedbackService.findOne(+id);
+    return this.feedbackService.findOne(id);
   }
 
   @Patch(':id')
@@ -36,11 +36,11 @@ export class FeedbackController {
     @Param('id') id: string,
     @Body() updateFeedbackDto: UpdateFeedbackDto,
   ) {
-    return this.feedbackService.update(+id, updateFeedbackDto);
+    return this.feedbackService.update(id, updateFeedbackDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.feedbackService.remove(+id);
+    return this.feedbackService.remove(id);
   }
 }

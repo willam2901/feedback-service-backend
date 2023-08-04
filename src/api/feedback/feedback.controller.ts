@@ -6,11 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  HttpStatus,
 } from '@nestjs/common';
 import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { UpdateFeedbackDto } from './dto/update-feedback.dto';
 import { EndpointEnum } from '@/app/utils/endpoint.enum';
+import { FeedbackFilter } from '@/api/feedback/dto/feedback.filter';
+import AppResponse from '@/app/utils/app-response.class';
+import { AppMessage } from '@/app/utils/messages.enum';
 
 @Controller(EndpointEnum.FEEDBACK)
 export class FeedbackController {
@@ -22,25 +27,45 @@ export class FeedbackController {
   }
 
   @Get()
-  findAll() {
-    return this.feedbackService.findAll();
+  async findAll(@Query() query: FeedbackFilter) {
+    const data = await this.feedbackService.findAll(query);
+    return new AppResponse({
+      statusCode: HttpStatus.OK,
+      message: AppMessage.FEEDBACK_GET_SUCCESS,
+      data,
+    });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.feedbackService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    let data = await this.feedbackService.findOne(id);
+    return new AppResponse({
+      statusCode: HttpStatus.OK,
+      message: AppMessage.FEEDBACK_GET_SUCCESS,
+      data,
+    });
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateFeedbackDto: UpdateFeedbackDto,
   ) {
-    return this.feedbackService.update(id, updateFeedbackDto);
+    let data = await this.feedbackService.update(id, updateFeedbackDto);
+    return new AppResponse({
+      statusCode: HttpStatus.OK,
+      message: AppMessage.FEEDBACK_UPDATE_SUCCESS,
+      data,
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.feedbackService.remove(id);
+  async remove(@Param('id') id: string) {
+    let data = await this.feedbackService.remove(id);
+    return new AppResponse({
+      statusCode: HttpStatus.OK,
+      message: AppMessage.FEEDBACK_DELETE_SUCCESS,
+      data,
+    });
   }
 }

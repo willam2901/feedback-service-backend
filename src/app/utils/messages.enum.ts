@@ -12,4 +12,5 @@ export enum AppMessage {
   FEEDBACK_GET_ALL_ERROR = 'Error retrieving all feedbacks!',
   FEEDBACK_DELETE_ERROR = 'Error deleting feedback!',
   FEEDBACK_UPDATE_ERROR = 'Error updating feedback!',
+  NOT_FOUND = 'Not found!',
 }

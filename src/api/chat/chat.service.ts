@@ -1,20 +1,34 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateFeedbackDto } from './dto/create-feedback.dto';
-import { UpdateFeedbackDto } from './dto/update-feedback.dto';
+import { CreateChatDto } from './dto/create-chat.dto';
+import { UpdateChatDto } from './dto/update-chat.dto';
+import { ChatFilter } from '@/api/chat/dto/chat.filter';
+import * as Twilio from 'twilio';
 import { PrismaService } from '@/prisma/prisma.service';
-import { FeedbackFilter } from '@/api/feedback/dto/feedback.filter';
 import { AppMessage } from '@/app/utils/messages.enum';
 import { HttpStatusCode } from 'axios';
 
 @Injectable()
-export class FeedbackService {
-  constructor(private readonly prismaService: PrismaService) {}
+export class ChatService {
+  private client: Twilio.Twilio;
 
-  create(createFeedbackDto: CreateFeedbackDto) {
-    return this.prismaService.feedback.create({ data: createFeedbackDto });
+  constructor(private readonly prismaService: PrismaService) {
+    this.client = new Twilio.Twilio(
+      process.env.TWILIO_SID,
+      process.env.TWILIO_TOKEN,
+    );
   }
 
-  async findAll(filterQuery: FeedbackFilter) {
+  async create(createChatDto: CreateChatDto) {
+    let findReceiverData = await this.prismaService.chat.findFirst({
+      where: { id: createChatDto.feedback_id },
+    });
+
+    return this.prismaService.chat.create({
+      data: createChatDto,
+    });
+  }
+
+  async findAll(filterQuery: ChatFilter) {
     if (!filterQuery.page) {
       filterQuery.page = 1;
     }
@@ -36,26 +50,26 @@ export class FeedbackService {
         id: filterQuery.id,
       });
     }
-    if (filterQuery.uid) {
+    if (filterQuery.feedback_id) {
       aggregation.push({
-        uid: filterQuery.uid,
+        feedback_id: filterQuery.feedback_id,
       });
     }
-    if (filterQuery.feedbackClosed) {
+    if (filterQuery.message) {
       aggregation.push({
-        feedbackClosed: filterQuery.feedbackClosed,
-      });
-    }
-
-    if (filterQuery.title) {
-      aggregation.push({
-        title: { contains: filterQuery.title, mode: 'insensitive' },
+        message: { contains: filterQuery.message, mode: 'insensitive' },
       });
     }
 
-    if (filterQuery.description) {
+    if (filterQuery.sender) {
       aggregation.push({
-        description: { contains: filterQuery.description, mode: 'insensitive' },
+        sender: { contains: filterQuery.sender, mode: 'insensitive' },
+      });
+    }
+
+    if (filterQuery.sender_name) {
+      aggregation.push({
+        sender_name: { contains: filterQuery.sender_name, mode: 'insensitive' },
       });
     }
 
@@ -64,7 +78,7 @@ export class FeedbackService {
      * Pagination Query
      *
      * */
-    let data = await this.prismaService.feedback.findMany({
+    let data = await this.prismaService.chat.findMany({
       where: {
         OR: aggregation,
       },
@@ -82,7 +96,7 @@ export class FeedbackService {
 
     let allData;
     if (aggregation.length > 0) {
-      allData = await this.prismaService.feedback.findMany({
+      allData = await this.prismaService.chat.findMany({
         take: pagination.limit,
         skip: (filterQuery.page - 1) * filterQuery.limit,
         where: {
@@ -90,7 +104,7 @@ export class FeedbackService {
         },
       });
     } else {
-      allData = await this.prismaService.feedback.findMany({
+      allData = await this.prismaService.chat.findMany({
         take: pagination.limit,
         skip: (filterQuery.page - 1) * filterQuery.limit,
       });
@@ -100,36 +114,33 @@ export class FeedbackService {
   }
 
   findOne(id: string) {
-    return this.prismaService.feedback.findFirst({
+    return this.prismaService.chat.findFirst({
       where: { id },
-      include: {
-        chat: true,
-      },
     });
   }
 
-  async update(id: string, updateFeedbackDto: UpdateFeedbackDto) {
-    let getSupport = await this.prismaService.feedback.findFirst({
+  async update(id: string, updateChatDto: UpdateChatDto) {
+    let getSupportDetails = await this.prismaService.chat.findFirst({
       where: { id: id },
     });
 
-    if (!Boolean(getSupport))
+    if (!Boolean(getSupportDetails))
       throw new HttpException(AppMessage.NOT_FOUND, HttpStatusCode.NotFound);
-    return this.prismaService.feedback.update({
+    return this.prismaService.chat.update({
       where: { id: id },
-      data: updateFeedbackDto,
+      data: updateChatDto,
     });
   }
 
   async remove(id: string) {
-    let getSupport = await this.prismaService.feedback.findFirst({
+    let getSupportDetails = await this.prismaService.chat.findFirst({
       where: { id },
     });
 
-    if (!Boolean(getSupport))
+    if (!Boolean(getSupportDetails))
       throw new HttpException(AppMessage.NOT_FOUND, HttpStatusCode.NotFound);
 
-    return await this.prismaService.feedback.delete({
+    return await this.prismaService.chat.delete({
       where: { id: id },
     });
   }

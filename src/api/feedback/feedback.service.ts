@@ -129,6 +129,10 @@ export class FeedbackService {
     if (!Boolean(getSupport))
       throw new HttpException(AppMessage.NOT_FOUND, HttpStatusCode.NotFound);
 
+    await this.prismaService.chat.deleteMany({
+      where: { feedback_id: id },
+    });
+
     return await this.prismaService.feedback.delete({
       where: { id: id },
     });

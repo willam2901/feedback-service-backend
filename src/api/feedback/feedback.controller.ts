@@ -8,7 +8,9 @@ import {
   Delete,
   Query,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
+import { Public, Roles } from 'nest-keycloak-connect';
 import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { UpdateFeedbackDto } from './dto/update-feedback.dto';
@@ -16,6 +18,8 @@ import { EndpointEnum } from '@/app/utils/endpoint.enum';
 import { FeedbackFilter } from '@/api/feedback/dto/feedback.filter';
 import AppResponse from '@/app/utils/app-response.class';
 import { AppMessage } from '@/app/utils/messages.enum';
+import { UserRole } from '@/app/common/user-role.enum';
+import { Whoiam } from '@/app/decorators/whoiam-decorator';
 
 @Controller(EndpointEnum.FEEDBACK)
 export class FeedbackController {
@@ -26,6 +30,8 @@ export class FeedbackController {
     return this.feedbackService.create(createFeedbackDto);
   }
 
+  @Roles({ roles: [UserRole.ADMIN] })
+  @UseGuards(Whoiam)
   @Get()
   async findAll(@Query() query: FeedbackFilter) {
     const data = await this.feedbackService.findAll(query);
@@ -36,6 +42,8 @@ export class FeedbackController {
     });
   }
 
+  @Roles({ roles: [UserRole.ADMIN] })
+  @UseGuards(Whoiam)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     let data = await this.feedbackService.findOne(id);
@@ -46,6 +54,8 @@ export class FeedbackController {
     });
   }
 
+  @Roles({ roles: [UserRole.ADMIN] })
+  @UseGuards(Whoiam)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -59,6 +69,8 @@ export class FeedbackController {
     });
   }
 
+  @Roles({ roles: [UserRole.ADMIN] })
+  @UseGuards(Whoiam)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     let data = await this.feedbackService.remove(id);

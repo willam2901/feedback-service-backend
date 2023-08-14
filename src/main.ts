@@ -9,18 +9,28 @@ import validationOptions from './app/utils/validation-options';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  try {
-    const microservice = await NestFactory.createMicroservice(AppModule, {
-      name: 'FEEDBACK_SERVICE',
+  // try {
+  //   const microservice = await NestFactory.createMicroservice(AppModule, {
+  //     name: 'FEEDBACK_SERVICE',
+  //     transport: Transport.REDIS,
+  //     options: {
+  //       url: `${process.env.REDIS_URL}`,
+  //     },
+  //   });
+  //   await microservice.listen();
+  // } catch (e) {
+  //   console.log(e);
+  // }
+
+  const microserviceApp =
+    await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
       transport: Transport.REDIS,
       options: {
-        url: `${process.env.REDIS_URL}`,
+        host: '178.128.220.73',
+        port: 6379,
       },
     });
-    await microservice.listen();
-  } catch (e) {
-    console.log(e);
-  }
+  await microserviceApp.listen();
 
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);

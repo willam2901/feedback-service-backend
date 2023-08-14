@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
@@ -16,6 +17,9 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { ChatFilter } from '@/api/chat/dto/chat.filter';
 import AppResponse from '@/app/utils/app-response.class';
 import { AppMessage } from '@/app/utils/messages.enum';
+import { Roles } from 'nest-keycloak-connect';
+import { UserRole } from '@/app/common/user-role.enum';
+import { Whoiam } from '@/app/decorators/whoiam-decorator';
 
 @Controller('chat')
 export class ChatController {
@@ -24,11 +28,15 @@ export class ChatController {
     private readonly prismaService: PrismaService,
   ) {}
 
+  @Roles({ roles: [UserRole.ADMIN] })
+  @UseGuards(Whoiam)
   @Post()
   create(@Body() createChatDto: CreateChatDto) {
     return this.chatService.create(createChatDto);
   }
 
+  @Roles({ roles: [UserRole.ADMIN] })
+  @UseGuards(Whoiam)
   @Get()
   async findAll(@Query() query: ChatFilter) {
     const data = await this.chatService.findAll(query);
@@ -39,6 +47,8 @@ export class ChatController {
     });
   }
 
+  @Roles({ roles: [UserRole.ADMIN] })
+  @UseGuards(Whoiam)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     let data = await this.chatService.findOne(id);
@@ -49,6 +59,8 @@ export class ChatController {
     });
   }
 
+  @Roles({ roles: [UserRole.ADMIN] })
+  @UseGuards(Whoiam)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateChatDto: UpdateChatDto) {
     let data = await this.chatService.update(id, updateChatDto);
@@ -59,6 +71,8 @@ export class ChatController {
     });
   }
 
+  @Roles({ roles: [UserRole.ADMIN] })
+  @UseGuards(Whoiam)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     let data = await this.chatService.remove(id);

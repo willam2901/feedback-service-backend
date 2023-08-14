@@ -76,7 +76,7 @@ export class TwilioWebhookService {
         });
 
         await this.sendWhatsAppMessage(payload.WaId, `${responseMsg.response}`);
-      } else if (payload.Body.toLowerCase() === CommandEnum.CLOSE) {
+      } else if (payload.Body.toLowerCase() === CommandEnum.DONE) {
         await this.prismaService.chat.create({
           data: {
             feedback_id: lastFeedback.id,

@@ -90,6 +90,12 @@ export class TwilioWebhookService {
           data: { feedbackClosed: true },
         });
       }
+      // else if (lastFeedback.feedbackClosed === true) {
+      //   await this.sendWhatsAppMessage(
+      //     payload.WaId,
+      //     'Type : Help for create Support Ticket . And Type Received for feedback .',
+      //   );
+      // }
     }
 
     return true;

@@ -9,4 +9,12 @@ export class PaginationDTO {
   @ApiProperty({ default: 10, required: false })
   @IsOptional()
   public limit: number;
+
+  @ApiProperty({ default: 'createdAt', required: false })
+  @IsOptional()
+  public sortBy: string;
+
+  @ApiProperty({ default: 'desc', required: false })
+  @IsOptional()
+  public sortOrder: string;
 }

@@ -21,6 +21,12 @@ export class FeedbackService {
     if (!filterQuery.limit) {
       filterQuery.limit = 10;
     }
+    if (!filterQuery.sortBy) {
+      filterQuery.sortBy = 'createdAt';
+    }
+    if (!filterQuery.sortOrder) {
+      filterQuery.sortOrder = 'desc';
+    }
 
     filterQuery.limit = filterQuery.limit === 0 ? 1 : filterQuery.limit;
     filterQuery.page = filterQuery.page === 0 ? 1 : filterQuery.page;
@@ -91,11 +97,17 @@ export class FeedbackService {
         where: {
           OR: aggregation,
         },
+        orderBy: {
+          [filterQuery.sortBy]: filterQuery.sortOrder,
+        },
       });
     } else {
       allData = await this.prismaService.feedback.findMany({
         take: pagination.limit,
         skip: (filterQuery.page - 1) * filterQuery.limit,
+        orderBy: {
+          [filterQuery.sortBy]: filterQuery.sortOrder,
+        },
       });
     }
 

@@ -28,7 +28,7 @@ export class FeedbackService {
     filterQuery.page = parseInt(String(filterQuery.page));
     filterQuery.limit = parseInt(String(filterQuery.limit));
 
-    let aggregation = [];
+    const aggregation = [];
 
     /*Filter*/
     if (filterQuery.id) {
@@ -64,20 +64,23 @@ export class FeedbackService {
      * Pagination Query
      *
      * */
-    let data = await this.prismaService.feedback.findMany({
-      where: {
-        OR: aggregation,
-      },
+    const data = await this.prismaService.feedback.findMany({
+      where:
+        aggregation.length > 0
+          ? {
+              OR: aggregation,
+            }
+          : {},
     });
-    let pagination = {
+    const pagination = {
       page: filterQuery.page,
       limit: filterQuery.limit,
       total: data.length,
       totalPages:
-        data.length < filterQuery.limit ? 1 : data.length / filterQuery.limit,
-      hasNextPage: Boolean(
-        data.length / filterQuery.limit !== filterQuery.page,
-      ),
+        data.length < filterQuery.limit
+          ? 1
+          : Math.ceil(data.length / filterQuery.limit),
+      hasNextPage: data.length / filterQuery.limit > filterQuery.page,
     };
 
     let allData;
@@ -109,7 +112,7 @@ export class FeedbackService {
   }
 
   async update(id: string, updateFeedbackDto: UpdateFeedbackDto) {
-    let getSupport = await this.prismaService.feedback.findFirst({
+    const getSupport = await this.prismaService.feedback.findFirst({
       where: { id: id },
     });
 
@@ -122,7 +125,7 @@ export class FeedbackService {
   }
 
   async remove(id: string) {
-    let getSupport = await this.prismaService.feedback.findFirst({
+    const getSupport = await this.prismaService.feedback.findFirst({
       where: { id },
     });
 

@@ -51,7 +51,7 @@ export class ChatController {
   @UseGuards(Whoiam)
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    let data = await this.chatService.findOne(id);
+    const data = await this.chatService.findOne(id);
     return new AppResponse({
       statusCode: HttpStatus.OK,
       message: AppMessage.FEEDBACK_GET_SUCCESS,
@@ -63,7 +63,7 @@ export class ChatController {
   @UseGuards(Whoiam)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateChatDto: UpdateChatDto) {
-    let data = await this.chatService.update(id, updateChatDto);
+    const data = await this.chatService.update(id, updateChatDto);
     return new AppResponse({
       statusCode: HttpStatus.OK,
       message: AppMessage.FEEDBACK_UPDATE_SUCCESS,
@@ -75,7 +75,7 @@ export class ChatController {
   @UseGuards(Whoiam)
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    let data = await this.chatService.remove(id);
+    const data = await this.chatService.remove(id);
     return new AppResponse({
       statusCode: HttpStatus.OK,
       message: AppMessage.FEEDBACK_DELETE_SUCCESS,

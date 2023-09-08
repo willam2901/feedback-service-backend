@@ -46,7 +46,7 @@ export class FeedbackController {
   @UseGuards(Whoiam)
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    let data = await this.feedbackService.findOne(id);
+    const data = await this.feedbackService.findOne(id);
     return new AppResponse({
       statusCode: HttpStatus.OK,
       message: AppMessage.FEEDBACK_GET_SUCCESS,
@@ -61,7 +61,7 @@ export class FeedbackController {
     @Param('id') id: string,
     @Body() updateFeedbackDto: UpdateFeedbackDto,
   ) {
-    let data = await this.feedbackService.update(id, updateFeedbackDto);
+    const data = await this.feedbackService.update(id, updateFeedbackDto);
     return new AppResponse({
       statusCode: HttpStatus.OK,
       message: AppMessage.FEEDBACK_UPDATE_SUCCESS,
@@ -73,7 +73,7 @@ export class FeedbackController {
   @UseGuards(Whoiam)
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    let data = await this.feedbackService.remove(id);
+    const data = await this.feedbackService.remove(id);
     return new AppResponse({
       statusCode: HttpStatus.OK,
       message: AppMessage.FEEDBACK_DELETE_SUCCESS,

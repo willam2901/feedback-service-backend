@@ -23,7 +23,7 @@ export class TwilioWebhookService {
     if (payload.Body.toLowerCase() === CommandEnum.RECEIVED) {
       console.log('FEEDBACK');
       console.log(payload);
-      let data = await this.prismaService.feedback.create({
+      const data = await this.prismaService.feedback.create({
         data: {
           uid: payload.WaId,
           name: payload.ProfileName,
@@ -56,11 +56,11 @@ export class TwilioWebhookService {
         },
       });
 
-      let length = await this.prismaService.chat.count({
+      const length = await this.prismaService.chat.count({
         where: { feedback_id: lastFeedback.id },
       });
 
-      let responseMsg = await this.prismaService.command.findFirst({
+      const responseMsg = await this.prismaService.command.findFirst({
         take: 1,
         skip: Math.floor(length / 2),
       });
@@ -103,7 +103,7 @@ export class TwilioWebhookService {
 
   async sendWhatsAppMessage(to: string, body: string) {
     try {
-      let data = await this.client.messages.create({
+      const data = await this.client.messages.create({
         body: body,
         from: `whatsapp:${process.env.SENDER_PHONE}`,
         to: `whatsapp:${to}`,
@@ -114,7 +114,7 @@ export class TwilioWebhookService {
   }
 
   async sendMessage(payload: any) {
-    let responseMsg = await this.prismaService.command.findFirst({
+    const responseMsg = await this.prismaService.command.findFirst({
       where: {
         command: {
           contains: payload.Body.replace(/\s+/g, ' '),

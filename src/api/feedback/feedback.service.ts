@@ -1,9 +1,9 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { UpdateFeedbackDto } from './dto/update-feedback.dto';
-import { PrismaService } from '@/prisma/prisma.service';
-import { FeedbackFilter } from '@/api/feedback/dto/feedback.filter';
-import { AppMessage } from '@/app/utils/messages.enum';
+import { PrismaService } from '../../prisma/prisma.service';
+import { FeedbackFilter } from '../feedback/dto/feedback.filter';
+import { AppMessage } from '../../app/utils/messages.enum';
 import { HttpStatusCode } from 'axios';
 
 @Injectable()

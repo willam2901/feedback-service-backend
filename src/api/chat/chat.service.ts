@@ -1,10 +1,10 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
-import { ChatFilter } from '@/api/chat/dto/chat.filter';
+import { ChatFilter } from '../chat/dto/chat.filter';
 import * as Twilio from 'twilio';
-import { PrismaService } from '@/prisma/prisma.service';
-import { AppMessage } from '@/app/utils/messages.enum';
+import { PrismaService } from '../../prisma/prisma.service';
+import { AppMessage } from '../../app/utils/messages.enum';
 import { HttpStatusCode } from 'axios';
 
 @Injectable()
